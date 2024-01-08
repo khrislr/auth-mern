@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -12,24 +14,25 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true)
-      setError(false)
+      setLoading(true);
+      setError(false);
       const res = await fetch("/api/auth/sign-up", {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
       const data = await res.json();
-      setLoading(false)
-      if(data.success === false){
-        setError(true)
-        return
+      setLoading(false);
+      if (data.success === false) {
+        setError(true);
+        return;
       }
+      navigate('/sign-in')
     } catch (error) {
-      setLoading(false)
-      setError(true)
+      setLoading(false);
+      setError(true);
     }
   };
 
@@ -58,7 +61,10 @@ export default function SignUp() {
           className="bg-slate-100 p-3 rounded-lg"
           onChange={handleChange}
         />
-        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+        >
           {loading ? "Loading..." : "Sign Up"}
         </button>
       </form>
